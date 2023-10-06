@@ -1,18 +1,24 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+// Set the region 
+AWS.config.update({region: 'us-east-2'});
 
-const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
+// Create the DynamoDB service object
+var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
-export const main = async () => {
-  const command = new GetCommand({
-    TableName: "CAR_POOL",
-    Key: {
-      CommonName: "DRIVE_ID"
-    }
-  });
-
-  const response = await docClient.send(command);
-  console.log(response);
-  return response;
+var params = {
+  TableName: 'CAR_POOL',
+  Key: {
+    'DRIVE_ID': {N: "1"}
+  },
+  ProjectionExpression: 'DETAILS'
 };
+
+// Call DynamoDB to read the item from the table
+ddb.getItem(params, function(err, data) {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    console.log("Success", data.Item);
+  }
+});

@@ -1,22 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
+    <title>RAD BUS Carpool Timer</title>
     <meta charset="utf-8">
-    <title>Car Pool Timer</title>
     <meta name="description" content="" />
     <link href="assets/css/styles.css" rel="stylesheet">
-    <link href="assets/css/gradients.css" rel="stylesheet">
+    <!-- <link href="assets/css/gradients.css" rel="stylesheet"> -->
+    <script src="assets/db/get.js"></script>
 </head>
 
-<body class="">
-    <div class="wrapper">
+<body>
+    <h1>Car Pool Timer!</h1>
+    <h2>For Lila, Margaret, Cooper and Palmer</h2>
+    <table id="dataGrid">
+        <thead>
+            <tr>
+                <th>Drive ID</th>
+                <th>Timer</th>
+                <th>Direction</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
 
-        <div class="message">
-           <div class="text">
-                <h1>Congratulations!</h1>
-            </div>
-        </div>
-    </div>
+    <button onclick="addRow()">Add Row</button>
+    <button onclick="">Click me to greet</button>
+    <script>
+
+
+
+        let rowData = [];
+
+        function addRow() {
+            const rowNumber = rowData.length + 1;
+            const newRow = {
+                id: rowNumber,
+                timer: null,
+                direction : null,
+                action: {
+                    minutes: 0,
+                    seconds: 0,
+                    intervalId: null
+                }
+            };
+
+            rowData.push(newRow);
+            updateGrid();
+
+            
+        }
+
+        function startTimer(rowId) {
+            const row = rowData.find(item => item.id === rowId);
+
+            if (row) {
+                row.action.intervalId = setInterval(() => {
+                    row.action.seconds++;
+
+                    if (row.action.seconds === 60) {
+                        row.action.seconds = 0;
+                        row.action.minutes++;
+                    }
+
+                    updateGrid();
+                }, 1000);
+            }
+        }
+
+        function stopTimer(rowId) {
+            const row = rowData.find(item => item.id === rowId);
+
+            if (row && row.action.intervalId) {
+                clearInterval(row.action.intervalId);
+                row.action.intervalId = null;
+                updateGrid();
+            }
+        }
+
+        function updateGrid() {
+            const tableBody = document.querySelector('#dataGrid tbody');
+            tableBody.innerHTML = '';
+
+            rowData.forEach(row => {
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.timer}</td>
+          <td>${row.direction}</td>
+          <td>${row.action.minutes}:${row.action.seconds < 10 ? '0' + row.action.seconds : row.action.seconds}
+            <button onclick="startTimer(${row.id})">Start</button>
+            <button onclick="stopTimer(${row.id})">Stop</button>
+          </td>
+        `;
+
+                tableBody.appendChild(rowElement);
+            });
+        }
+    </script>
 </body>
+
 </html>
