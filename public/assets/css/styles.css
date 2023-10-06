@@ -1,5 +1,5 @@
 * {
-  margin: 0;
+  margin: 5;
 }
 
 html, body {
@@ -12,7 +12,11 @@ html {
   font-family: "Helvetica Neue", Roboto, Arial, sans-serif;
   font-size: 62.5%;
   color: white;
-  background: linear-gradient(to bottom, #2473ab 0%,#1e528e 70%,#5b7983 100%);
+  background: linear-gradient(to bottom, #ff00ae 0%,#ff00ae 70%,#ff00ae 100%);
+}
+
+table, th, td {
+  border: 1px solid;
 }
 
 body {
